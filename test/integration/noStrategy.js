@@ -107,7 +107,6 @@ describe('Travelogue', function () {
                 }
             });
 
-
             server.addRoute({
                 method: 'POST',
                 path: '/login',
@@ -137,7 +136,7 @@ describe('Travelogue', function () {
 
 
     it('should allow unauthenticated requests to excluded paths', function (done) {
-    
+
         var request = {
             method: 'GET',
             url: '/excluded'
@@ -151,6 +150,30 @@ describe('Travelogue', function () {
         });
     });
 
+
+    it('should respond with JSON if requested in Accept header', function (done) {
+
+        var body = {
+            username: 'van',
+            password: 'walmart'
+        };
+
+        var request = {
+            method: 'POST',
+            url: '/login',
+            payload: JSON.stringify(body),
+            headers: { 'Accept': 'application/json, text/plain, */*' }
+        };
+
+        server.inject(request, function (res) {
+
+            expect(res.statusCode).to.equal(200);
+
+            expect(res.headers['content-type']).to.match(/application\/json/);
+
+            done();
+        });
+    });
 
     it('should allow for login via POST', function (done) {
 
